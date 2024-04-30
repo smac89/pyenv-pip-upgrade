@@ -56,7 +56,7 @@ function __element_in () {
 function pip_upgrade_packages () {
   # https://stackoverflow.com/a/3452888/1108213
   local outdated_packages=()
-  readarray -t outdated_packages < <(__pip list --outdated --format=freeze 2>/dev/null | awk 'match($0, /^(.+?)==/, arr) {print arr[1]}')
+  readarray -t outdated_packages < <(__pip list --disable-pip-version-check --outdated --format=json | python -c 'import json,sys;print(*(x["name"] for x in json.load(sys.stdin)),sep="\n")'
   if [[ ${#outdated_packages[@]} -eq 0 ]]; then
     __msg_info "Nothing to update in this environment..."
     return
